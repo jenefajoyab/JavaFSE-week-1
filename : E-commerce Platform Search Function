@@ -1,0 +1,96 @@
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Scanner;
+
+class Product {
+    private int productId;
+    private String productName;
+    private String category;
+
+    public Product(int productId, String productName, String category) {
+        this.productId = productId;
+        this.productName = productName;
+        this.category = category;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    @Override
+    public String toString() {
+        return "Product ID: " + productId + ", Name: " + productName + ", Category: " + category;
+    }
+}
+
+public class ECommerceSearch {
+    public static Product binarySearch(Product[] products, String productName) {
+        Arrays.sort(products, Comparator.comparing(Product::getProductName)); // Ensure array is sorted
+
+        int left = 0;
+        int right = products.length - 1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            int comparison = products[mid].getProductName().compareToIgnoreCase(productName);
+
+            if (comparison == 0) {
+                return products[mid]; // Product found
+            } else if (comparison < 0) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return null; // If product not found
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the number of products: ");
+        int numProducts = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+        Product[] products = new Product[numProducts];
+
+        // User input for products
+        for (int i = 0; i < numProducts; i++) {
+            System.out.println("Enter details for product " + (i + 1) + ":");
+            System.out.print("Product ID: ");
+            int productId = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            System.out.print("Product Name: ");
+            String productName = scanner.nextLine();
+
+            System.out.print("Category: ");
+            String category = scanner.nextLine();
+
+            products[i] = new Product(productId, productName, category);
+        }
+
+        // User input for product to search
+        System.out.print("\nEnter the name of the product to search for: ");
+        String searchName = scanner.nextLine();
+
+        // Perform binary search
+        Product foundProduct = binarySearch(products, searchName);
+
+        if (foundProduct != null) {
+            System.out.println("Product found: " + foundProduct);
+        } else {
+            System.out.println("Product not found.");
+        }
+
+        scanner.close();
+    }
+}
